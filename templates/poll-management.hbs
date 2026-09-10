@@ -1,0 +1,152 @@
+<section class="democracy-management">
+  {{#unless hasActivePoll}}
+    <p class="democracy-empty">{{localize "DEMOCRACY.Notifications.NoActiveVote"}}</p>
+  {{/unless}}
+
+  {{#if hasActivePoll}}
+    <nav class="democracy-management-tabs">
+      <button type="button" data-action="switchTab" data-tab="management" class="{{#if (eq activeTab "management")}}active{{/if}}">
+        {{localize "DEMOCRACY.Management.Title"}}
+      </button>
+      <button type="button" data-action="switchTab" data-tab="cinematic" class="{{#if (eq activeTab "cinematic")}}active{{/if}}">
+        {{localize "DEMOCRACY.Cinematic.Tab"}}
+      </button>
+    </nav>
+  {{/if}}
+
+  {{#if hasActivePoll}}
+  {{#if (eq activeTab "cinematic")}}
+    <section class="democracy-cinematic-settings">
+      <label class="democracy-field">
+        <span class="democracy-field-label">{{localize "DEMOCRACY.Cinematic.TitleLabel"}}</span>
+        <input type="text" name="title" value="{{cinematicConfig.title}}" placeholder="{{localize 'DEMOCRACY.Cinematic.DefaultTitle'}}" />
+      </label>
+
+      <label class="democracy-toggle-card">
+        <input type="checkbox" name="playOnEnd" {{#if cinematicConfig.playOnEnd}}checked{{/if}} />
+        <span class="democracy-toggle-text">
+          <span class="democracy-toggle-title">{{localize "DEMOCRACY.Cinematic.PlayOnEndLabel"}}</span>
+          <span class="democracy-toggle-hint">{{localize "DEMOCRACY.Cinematic.PlayOnEndHint"}}</span>
+        </span>
+      </label>
+
+      <label class="democracy-toggle-card">
+        <input type="checkbox" name="pauseOnPlay" {{#if cinematicConfig.pauseOnPlay}}checked{{/if}} />
+        <span class="democracy-toggle-text">
+          <span class="democracy-toggle-title">{{localize "DEMOCRACY.Cinematic.PauseOnPlayLabel"}}</span>
+          <span class="democracy-toggle-hint">{{localize "DEMOCRACY.Cinematic.PauseOnPlayHint"}}</span>
+        </span>
+      </label>
+
+      <div class="democracy-field">
+        <span class="democracy-field-label">{{localize "DEMOCRACY.Cinematic.BackgroundImageLabel"}}</span>
+        <div class="democracy-cinematic-image-row">
+          <img class="democracy-cinematic-image-preview" src="{{cinematicConfig.backgroundImage}}" alt="" />
+          <input type="hidden" name="backgroundImage" value="{{cinematicConfig.backgroundImage}}" />
+          <button type="button" class="democracy-btn-ghost" data-action="pickCinematicImage">
+            <i class="fa-solid fa-image" aria-hidden="true"></i> {{localize "DEMOCRACY.Cinematic.ChooseImage"}}
+          </button>
+        </div>
+      </div>
+
+      <footer class="democracy-result-actions">
+        <button type="button" class="democracy-btn-primary" data-action="saveCinematicSettings">
+          <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> {{localize "DEMOCRACY.Cinematic.Save"}}
+        </button>
+      </footer>
+    </section>
+  {{else}}
+    <header>
+      <h2>{{projection.title}}</h2>
+      <p class="democracy-status-line tag">{{localize "DEMOCRACY.Status.Label"}}: {{statusLabel}}</p>
+      {{#if isTimed}}
+        <p class="democracy-countdown" role="timer" aria-live="off">
+          <i class="fa-solid fa-clock" aria-hidden="true"></i>
+          {{localize "DEMOCRACY.Ballot.TimeRemaining"}}: <strong>{{countdownText}}</strong>
+        </p>
+      {{/if}}
+    </header>
+
+    <ul class="democracy-participant-status-list">
+      {{#each participants as |p|}}
+        <li data-participant-row="{{p.id}}">
+          <img src="{{p.img}}" alt="" width="20" height="20" />
+          <span>{{p.name}}</span>
+          <span class="tag">{{p.statusLabel}}</span>
+          {{#if ../isActive}}
+            <div class="democracy-participant-row-actions">
+              <button type="button" class="democracy-icon-btn" data-action="resetBallot" data-participant-id="{{p.id}}" aria-label="{{localize 'DEMOCRACY.Management.Reset'}}">
+                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="democracy-icon-btn democracy-icon-btn-danger" data-action="excludeParticipant" data-participant-id="{{p.id}}" aria-label="{{localize 'DEMOCRACY.Management.Exclude'}}">
+                <i class="fa-solid fa-user-slash" aria-hidden="true"></i>
+              </button>
+            </div>
+          {{/if}}
+        </li>
+      {{/each}}
+    </ul>
+
+    {{#if liveTally}}
+      <section class="democracy-live-results">
+        <h3><i class="fa-solid fa-chart-simple" aria-hidden="true"></i> {{localize "DEMOCRACY.Ballot.LiveResultsLabel"}}</h3>
+        {{#each liveTally.rows as |row|}}
+          <div class="democracy-live-bar-row">
+            <span class="democracy-live-bar-label">{{row.label}}</span>
+            <span class="democracy-live-bar-count">{{row.count}}</span>
+          </div>
+        {{/each}}
+      </section>
+    {{/if}}
+
+    {{#if isActive}}
+      <footer class="democracy-result-actions">
+        <div class="democracy-action-row">
+          <button type="button" class="democracy-btn-ghost" data-action="openBallot">
+            <i class="fa-solid fa-check-to-slot" aria-hidden="true"></i> {{localize "DEMOCRACY.Management.Vote"}}
+          </button>
+          <button type="button" class="democracy-btn-ghost democracy-btn-danger" data-action="cancelVote">
+            <i class="fa-solid fa-ban" aria-hidden="true"></i> {{localize "DEMOCRACY.Management.CancelVote"}}
+          </button>
+        </div>
+        <button type="button" class="democracy-btn-primary" data-action="closeVote">
+          <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i> {{localize "DEMOCRACY.Management.CloseVote"}}
+        </button>
+      </footer>
+    {{else}}
+      <section class="democracy-result">
+        <h3>{{localize (concat "DEMOCRACY.Result." outcome.status)}}</h3>
+        {{#if winnerLabels.length}}
+          <p class="democracy-winner-line">
+            <strong>{{localize "DEMOCRACY.Management.WinningOption"}}:</strong>
+            {{#each winnerLabels}}{{#unless @first}}, {{/unless}}{{this}}{{/each}}
+          </p>
+        {{/if}}
+        {{#if turnout}}
+          <p>{{localize "DEMOCRACY.Management.Turnout"}}: {{turnout.submittedCount}}/{{turnout.eligibleCount}}</p>
+        {{/if}}
+        <footer class="democracy-result-actions">
+          {{#if isClosed}}
+            <div class="democracy-action-row">
+              <button type="button" class="democracy-btn-ghost" data-action="exportResultOnly" {{#if exporting}}disabled{{/if}}>
+                <i class="fa-solid fa-file-lines" aria-hidden="true"></i> {{localize "DEMOCRACY.Management.ExportResultOnly"}}
+              </button>
+              <button type="button" class="democracy-btn-ghost" data-action="exportVoting" {{#if exporting}}disabled{{/if}}>
+                <i class="fa-solid fa-file-export" aria-hidden="true"></i> {{localize "DEMOCRACY.Management.ExportVoting"}}
+              </button>
+            </div>
+          {{/if}}
+          {{#if canPlayCinematic}}
+            <button type="button" class="democracy-btn-cinematic" data-action="playCinematic">
+              <i class="fa-solid fa-clapperboard" aria-hidden="true"></i> {{localize "DEMOCRACY.Cinematic.PlayCinematic"}}
+            </button>
+          {{/if}}
+          <button type="button" class="democracy-btn-primary" data-action="startNewPoll">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> {{localize "DEMOCRACY.Management.StartNewPoll"}}
+          </button>
+        </footer>
+      </section>
+    {{/if}}
+  {{/if}}
+  {{/if}}
+</section>

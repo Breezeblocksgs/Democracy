@@ -1,0 +1,865 @@
+.democracy {
+  --democracy-gap: 0.6rem;
+  --democracy-accent: #d4a527;
+  --democracy-radius: 6px;
+  --democracy-card-bg: rgba(255, 255, 255, 0.04);
+  --democracy-card-border: rgba(255, 255, 255, 0.12);
+  --democracy-danger: #c9433f;
+  --democracy-success: #3f9142;
+  --democracy-solid-surface: #1c1a15;
+}
+
+:root[data-theme="light"] .democracy,
+.theme-light .democracy {
+  --democracy-card-bg: rgba(0, 0, 0, 0.035);
+  --democracy-card-border: rgba(0, 0, 0, 0.14);
+  --democracy-solid-surface: #f2efe7;
+}
+
+.democracy-poll-builder-content,
+.democracy-ballot,
+.democracy-management {
+  overflow-y: auto;
+}
+
+.democracy-builder,
+.democracy-ballot,
+.democracy-management {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ---------- shared primitives ---------- */
+
+.democracy h2 {
+  margin: 0;
+  font-size: 1.3em;
+  border: none;
+}
+
+.democracy h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+}
+
+.democracy .democracy-description {
+  margin: 0.2rem 0 0;
+  opacity: 0.85;
+}
+
+.democracy .democracy-status-line {
+  display: inline-block;
+  margin: 0.3rem 0 0;
+}
+
+.democracy .democracy-empty,
+.democracy .democracy-notice {
+  padding: 0.75rem;
+  border-radius: var(--democracy-radius);
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+  text-align: center;
+}
+
+.democracy button {
+  border-radius: var(--democracy-radius);
+  cursor: pointer;
+}
+
+.democracy button:focus-visible,
+.democracy input:focus-visible,
+.democracy select:focus-visible,
+.democracy [tabindex]:focus-visible {
+  outline: 2px solid var(--democracy-accent);
+  outline-offset: 1px;
+}
+
+.democracy .tag {
+  font-size: 0.75em;
+  opacity: 0.85;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 0 0.35em;
+  white-space: nowrap;
+}
+
+/* ---------- GM builder ---------- */
+
+.democracy-builder .hint {
+  margin: -0.3rem 0 0.3rem 1.6rem;
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
+.democracy-builder fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--democracy-gap);
+  border: 1px solid var(--democracy-card-border);
+  border-radius: var(--democracy-radius);
+  padding: 0.7rem 0.9rem 0.9rem;
+}
+
+.democracy-builder legend {
+  padding: 0 0.4rem;
+  font-weight: 600;
+}
+
+.democracy-builder label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.democracy-builder label:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+}
+
+.democracy-builder input[type="text"],
+.democracy-builder input[type="number"],
+.democracy-builder textarea,
+.democracy-builder select {
+  width: 100%;
+}
+
+.democracy-option-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.democracy-option-row input {
+  flex: 1;
+}
+
+.democracy-participant-pools {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.democracy-pool {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.democracy-bulk-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.democracy-token-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.democracy-token-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.democracy-weight-label {
+  font-size: 0.8em;
+  opacity: 0.7;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+input.democracy-weight-input[type="number"] {
+  width: 3.2rem;
+  flex-shrink: 0;
+}
+
+.democracy-token-card {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--democracy-radius);
+  border: 1px solid transparent;
+  background: var(--democracy-card-bg);
+}
+
+.democracy-token-card:hover {
+  border-color: var(--democracy-card-border);
+}
+
+.democracy-token-card img {
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.democracy-token-card.warning {
+  outline: 2px solid var(--democracy-danger);
+}
+
+.democracy-builder-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  position: sticky;
+  bottom: 0;
+  margin: 0.5rem -0.1px -0.1px;
+  padding: 0.6rem 0.1px;
+  background: var(--democracy-solid-surface);
+  border-top: 1px solid var(--democracy-card-border);
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.democracy-builder-actions button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: var(--democracy-radius);
+}
+
+.democracy-builder-actions .democracy-btn-primary:disabled {
+  background: var(--democracy-card-bg);
+  color: inherit;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.democracy-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  padding: 0;
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+  border-radius: var(--democracy-radius);
+  color: inherit;
+}
+
+.democracy-icon-btn:hover {
+  border-color: var(--democracy-accent);
+  color: var(--democracy-accent);
+}
+
+.democracy-icon-btn-danger:hover {
+  border-color: var(--democracy-danger);
+  color: var(--democracy-danger);
+}
+
+/* ---------- ballot (player view) ---------- */
+
+.democracy-ballot-header {
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--democracy-card-border);
+}
+
+.democracy-countdown {
+  margin: 0.5rem 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+  font-size: 0.9em;
+}
+
+.democracy-participant-tabs {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.democracy-participant-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--democracy-card-border);
+  background: var(--democracy-card-bg);
+}
+
+.democracy-participant-tab.active {
+  border-color: var(--democracy-accent);
+  background: color-mix(in srgb, var(--democracy-accent) 18%, transparent);
+}
+
+.democracy-participant-tab img {
+  border-radius: 50%;
+}
+
+.democracy-tab-status {
+  font-size: 0.8em;
+  opacity: 0.75;
+}
+
+.democracy-participant-tab.status-submitted .democracy-tab-status,
+.democracy-participant-tab.status-abstained .democracy-tab-status {
+  color: var(--democracy-success);
+  opacity: 1;
+}
+
+.democracy-proposal-choices,
+.democracy-choice-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.democracy-choice-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--democracy-radius);
+  border: 1px solid var(--democracy-card-border);
+  background: var(--democracy-card-bg);
+  cursor: pointer;
+}
+
+.democracy-choice-card:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.democracy-choice-card.selected {
+  border-color: var(--democracy-accent);
+  background: color-mix(in srgb, var(--democracy-accent) 16%, transparent);
+}
+
+.democracy-choice-card input {
+  flex-shrink: 0;
+}
+
+.democracy-abstain-card {
+  opacity: 0.85;
+}
+
+.democracy-selection-count {
+  margin: 0;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.democracy-ballot-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.democracy-submit-button {
+  align-self: flex-start;
+  background: var(--democracy-accent);
+  color: #1a1305;
+  font-weight: 600;
+  border: none;
+  padding: 0.5rem 1.4rem;
+}
+
+.democracy-submit-button:disabled {
+  background: var(--democracy-card-bg);
+  color: inherit;
+  opacity: 0.5;
+}
+
+.democracy-status-banner {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--democracy-radius);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.democracy-status-banner.accepted {
+  background: color-mix(in srgb, var(--democracy-success) 20%, transparent);
+  border: 1px solid var(--democracy-success);
+}
+
+.democracy-status-banner.rejected {
+  background: color-mix(in srgb, var(--democracy-danger) 20%, transparent);
+  border: 1px solid var(--democracy-danger);
+}
+
+.democracy-live-results {
+  border-top: 1px solid var(--democracy-card-border);
+  padding-top: 0.7rem;
+}
+
+.democracy-live-results h3 {
+  color: var(--democracy-accent);
+}
+
+.democracy-live-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--democracy-radius);
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+}
+
+.democracy-live-bar-row + .democracy-live-bar-row {
+  margin-top: 0.35rem;
+}
+
+.democracy-live-bar-count {
+  font-weight: 700;
+  min-width: 1.5em;
+  text-align: right;
+}
+
+/* ---------- GM management ---------- */
+
+.democracy-management header {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--democracy-card-border);
+}
+
+.democracy-participant-status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.democracy-participant-status-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--democracy-radius);
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+}
+
+.democracy-participant-status-list li img {
+  border-radius: 50%;
+}
+
+.democracy-participant-status-list li span:first-of-type {
+  flex: 1;
+}
+
+.democracy-participant-row-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.democracy-result {
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--democracy-card-border);
+}
+
+.democracy-winner-line {
+  font-size: 1.05em;
+}
+
+.democracy-management footer {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.democracy-btn-ghost.democracy-btn-danger {
+  color: var(--democracy-danger);
+  border-color: color-mix(in srgb, var(--democracy-danger) 45%, var(--democracy-card-border));
+}
+
+.democracy-btn-ghost.democracy-btn-danger:hover {
+  border-color: var(--democracy-danger);
+  background: color-mix(in srgb, var(--democracy-danger) 14%, transparent);
+  color: var(--democracy-danger);
+}
+
+footer.democracy-result-actions {
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 0.8rem;
+  margin-top: 0.2rem;
+  border-top: 1px solid var(--democracy-card-border);
+}
+
+.democracy-action-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.democracy-action-row button {
+  flex: 1;
+}
+
+.democracy-result-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: var(--democracy-radius);
+}
+
+.democracy-btn-ghost {
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+  color: inherit;
+  font-weight: 500;
+}
+
+.democracy-btn-ghost:hover:not(:disabled) {
+  border-color: var(--democracy-accent);
+  color: var(--democracy-accent);
+}
+
+.democracy-btn-ghost:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.democracy-btn-cinematic {
+  background: color-mix(in srgb, var(--democracy-accent) 14%, transparent);
+  border: 1px solid var(--democracy-accent);
+  color: var(--democracy-accent);
+}
+
+.democracy-btn-cinematic:hover {
+  background: color-mix(in srgb, var(--democracy-accent) 24%, transparent);
+}
+
+.democracy-btn-primary {
+  background: var(--democracy-accent);
+  border: none;
+  color: #1a1305;
+}
+
+.democracy-btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.democracy-management-tabs {
+  display: flex;
+  gap: 0.4rem;
+  border-bottom: 1px solid var(--democracy-card-border);
+  padding-bottom: 0.5rem;
+}
+
+.democracy-management-tabs button {
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+  padding: 0.35rem 0.9rem;
+}
+
+.democracy-management-tabs button.active {
+  border-color: var(--democracy-accent);
+  background: color-mix(in srgb, var(--democracy-accent) 18%, transparent);
+}
+
+.democracy-cinematic-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.democracy-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.democracy-field-label {
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+.democracy-cinematic-settings input[type="text"] {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--democracy-radius);
+  border: 1px solid var(--democracy-card-border);
+  background: var(--democracy-card-bg);
+  color: inherit;
+}
+
+.democracy-toggle-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--democracy-radius);
+  background: var(--democracy-card-bg);
+  border: 1px solid var(--democracy-card-border);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.democracy-toggle-card:has(input:checked) {
+  border-color: var(--democracy-accent);
+}
+
+.democracy-toggle-card input[type="checkbox"] {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+.democracy-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.democracy-toggle-title {
+  font-weight: 600;
+}
+
+.democracy-toggle-hint {
+  font-size: 0.85em;
+  opacity: 0.75;
+  line-height: 1.35;
+}
+
+.democracy-toggle-text input[type="number"] {
+  margin-top: 0.5rem;
+  width: 140px;
+  padding: 0.4rem 0.55rem;
+  border-radius: var(--democracy-radius);
+  border: 1px solid var(--democracy-card-border);
+  background: var(--democracy-card-bg);
+  color: inherit;
+}
+
+.democracy-cinematic-image-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.democracy-cinematic-image-preview {
+  width: 72px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: var(--democracy-radius);
+  border: 1px solid var(--democracy-card-border);
+}
+
+/* ---------- cinematic reveal (full-bleed overlay, not chrome) ---------- */
+
+.democracy-cinematic {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+  overflow: hidden;
+  z-index: 100;
+  transition: opacity 1.5s ease;
+}
+
+.democracy-cinematic.cinematic-fade-out {
+  opacity: 0;
+}
+
+.democracy-cinematic-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+.democracy-cinematic.show-bg .democracy-cinematic-bg {
+  opacity: 0.55;
+}
+
+.democracy-cinematic-veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.65) 100%);
+}
+
+.democracy-cinematic-title {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 5.5em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  -webkit-text-stroke: 2px #000;
+  paint-order: stroke fill;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  margin: 0;
+}
+
+.democracy-cinematic.show-title .democracy-cinematic-title {
+  opacity: 1;
+}
+
+.democracy-cinematic-poll-info {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  max-width: 70%;
+}
+
+.democracy-cinematic-poll-info h2 {
+  font-size: 3.2em;
+  margin: 0 0 0.3rem;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.democracy-cinematic-poll-info p {
+  font-size: 2em;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  margin: 0;
+}
+
+.democracy-cinematic.show-poll-title .democracy-cinematic-poll-info h2 {
+  opacity: 1;
+}
+
+.democracy-cinematic.show-poll-description .democracy-cinematic-poll-info p {
+  opacity: 1;
+}
+
+.democracy-cinematic-result-frame {
+  position: relative;
+  padding: 1.4rem 2.2rem;
+  border: 2px solid var(--democracy-accent);
+  border-radius: var(--democracy-radius);
+  background: rgba(0, 0, 0, 0.55);
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.democracy-cinematic.show-result .democracy-cinematic-result-frame {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.democracy-cinematic-result-text {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.democracy-cinematic-result-detail {
+  font-size: 1.2em;
+  opacity: 0.85;
+  margin: 0.3rem 0 0;
+}
+
+.democracy-cinematic-turnout {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2rem;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.democracy-cinematic.show-result .democracy-cinematic-turnout {
+  opacity: 1;
+}
+
+.democracy-cinematic-turnout p {
+  margin: 0;
+  font-size: 1.1em;
+  opacity: 0.85;
+}
+
+.democracy-cinematic-close,
+.democracy-cinematic-end {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  border-radius: var(--democracy-radius);
+}
+
+.democracy-cinematic-close {
+  top: 1rem;
+  right: 1rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.democracy-cinematic-end {
+  bottom: 1.5rem;
+  right: 1.5rem;
+  padding: 0.5rem 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .democracy-cinematic,
+  .democracy-cinematic * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .democracy * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

@@ -1,0 +1,46 @@
+<div class="democracy-cinematic-stage">
+  <div class="democracy-cinematic-bg" style="background-image: url('{{backgroundImage}}');"></div>
+  <div class="democracy-cinematic-veil"></div>
+
+  <h1 class="democracy-cinematic-title">{{title}}</h1>
+
+  <div class="democracy-cinematic-poll-info">
+    <h2>{{pollTitle}}</h2>
+    {{#if pollDescription}}<p>{{pollDescription}}</p>{{/if}}
+  </div>
+
+  <div class="democracy-cinematic-result-frame">
+    {{#if isProposal}}
+      <p class="democracy-cinematic-result-text">{{resultStatusLabel}}</p>
+    {{else}}
+      {{#if summary.tied}}
+        <p class="democracy-cinematic-result-text">
+          {{localize "DEMOCRACY.Result.tied-result"}}
+          ({{#each summary.winnerLabels}}{{#unless @first}}, {{/unless}}{{this}}{{/each}})
+        </p>
+      {{else if summary.winnerLabels.length}}
+        <p class="democracy-cinematic-result-text">{{lookup summary.winnerLabels 0}}</p>
+        <p class="democracy-cinematic-result-detail">{{summary.votes}} — {{summary.percentage}}%</p>
+      {{else}}
+        <p class="democracy-cinematic-result-text">{{resultStatusLabel}}</p>
+      {{/if}}
+    {{/if}}
+  </div>
+
+  {{#if turnout}}
+    <div class="democracy-cinematic-turnout">
+      <p>{{localize "DEMOCRACY.Cinematic.EligibleLabel"}}: {{turnout.eligibleCount}}</p>
+      <p>{{localize "DEMOCRACY.Cinematic.VotedLabel"}}: {{turnout.submittedCount}}</p>
+    </div>
+  {{/if}}
+
+  <button type="button" class="democracy-cinematic-close" data-action="close" hidden aria-label="{{localize 'DEMOCRACY.Cinematic.Close'}}">
+    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+  </button>
+
+  {{#if isGm}}
+    <button type="button" class="democracy-cinematic-end" data-action="endCinematic">
+      {{localize "DEMOCRACY.Cinematic.EndCinematic"}}
+    </button>
+  {{/if}}
+</div>

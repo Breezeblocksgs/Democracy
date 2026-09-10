@@ -1,0 +1,196 @@
+<section class="democracy-builder">
+
+  {{#if hasActivePoll}}
+    <p class="notification warning">{{localize "DEMOCRACY.Builder.AnotherPollActive"}}</p>
+  {{/if}}
+
+  <fieldset>
+    <legend>{{localize "DEMOCRACY.Builder.Title"}}</legend>
+
+    <label for="democracy-title" class="democracy-field-label">{{localize "DEMOCRACY.Builder.PollTitle"}}</label>
+    <input id="democracy-title" type="text" name="title" value="{{draft.title}}" maxlength="120" required />
+
+    <label for="democracy-description" class="democracy-field-label">{{localize "DEMOCRACY.Builder.PollDescription"}}</label>
+    <textarea id="democracy-description" name="description" maxlength="5000">{{draft.description}}</textarea>
+
+    <label for="democracy-poll-type" class="democracy-field-label">{{localize "DEMOCRACY.Builder.PollType"}}</label>
+    <select id="democracy-poll-type" name="pollType">
+      <option value="proposal" {{#if isProposal}}selected{{/if}}>{{localize "DEMOCRACY.Builder.PollTypeProposal"}}</option>
+      <option value="choice" {{#if isChoice}}selected{{/if}}>{{localize "DEMOCRACY.Builder.PollTypeChoice"}}</option>
+    </select>
+  </fieldset>
+
+  {{#if isChoice}}
+    <fieldset>
+      <legend>{{localize "DEMOCRACY.Builder.Options"}}</legend>
+      {{#each draft.options as |option index|}}
+        <div class="democracy-option-row">
+          <label for="democracy-option-{{index}}" class="sr-only">{{localize "DEMOCRACY.Builder.Options"}} {{index}}</label>
+          <input id="democracy-option-{{index}}" type="text" name="options.{{index}}" value="{{option.label}}" maxlength="200" />
+          <button type="button" class="democracy-icon-btn democracy-icon-btn-danger" data-action="removeOption" data-option-id="{{option.id}}" aria-label="{{localize "DEMOCRACY.Builder.RemoveOption"}}">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+      {{/each}}
+      <button type="button" class="democracy-btn-ghost" data-action="addOption">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i> {{localize "DEMOCRACY.Builder.AddOption"}}
+      </button>
+
+      <label class="democracy-toggle-card">
+        <input type="checkbox" name="allowMultipleSelections" {{#if draft.allowMultipleSelections}}checked{{/if}} />
+        <span class="democracy-toggle-text">
+          <span class="democracy-toggle-title">{{localize "DEMOCRACY.Builder.AllowMultipleSelections"}}</span>
+        </span>
+      </label>
+
+      {{#if draft.allowMultipleSelections}}
+        <label for="democracy-max-selections" class="democracy-field-label">{{localize "DEMOCRACY.Builder.MaxSelections"}}</label>
+        <input id="democracy-max-selections" type="number" name="maxSelections" value="{{draft.maxSelections}}" min="1" max="{{draft.options.length}}" />
+      {{/if}}
+    </fieldset>
+  {{/if}}
+
+  {{#if isProposal}}
+    <fieldset>
+      <legend>{{localize "DEMOCRACY.Builder.ProposalRule"}}</legend>
+      <select name="proposalRule" aria-describedby="democracy-hint-proposal-rule">
+        {{#each proposalRules as |rule|}}
+          <option value="{{rule.value}}" {{#if (eq rule.value ../draft.proposalRule)}}selected{{/if}}>{{rule.label}}</option>
+        {{/each}}
+      </select>
+      <p id="democracy-hint-proposal-rule" class="hint">{{proposalRuleDescription}}</p>
+
+      {{#if isSupermajority}}
+        <label class="democracy-field-label">{{localize "DEMOCRACY.Builder.SupermajorityThreshold"}}</label>
+        <select name="supermajorityPreset">
+          <option value="SIXTY_PERCENT">60%</option>
+          <option value="TWO_THIRDS" selected>2/3</option>
+          <option value="SEVENTY_FIVE_PERCENT">75%</option>
+          <option value="EIGHTY_PERCENT">80%</option>
+        </select>
+
+        <label class="democracy-field-label">{{localize "DEMOCRACY.Builder.SupermajorityBasis"}}</label>
+        <select name="supermajorityBasis">
+          {{#each supermajorityBases as |basis|}}
+            <option value="{{basis.value}}" {{#if (eq basis.value ../draft.supermajorityBasis)}}selected{{/if}}>{{basis.label}}</option>
+          {{/each}}
+        </select>
+      {{/if}}
+    </fieldset>
+  {{/if}}
+
+  <fieldset>
+    <legend>{{localize "DEMOCRACY.Builder.Participants"}}</legend>
+
+    {{#if hasDuplicateActors}}
+      <p class="notification warning">{{localize "DEMOCRACY.Builder.DuplicateActorWarning"}}</p>
+    {{/if}}
+
+    <div class="democracy-participant-pools">
+      <div class="democracy-pool">
+        <h3>{{localize "DEMOCRACY.Builder.AvailableTokens"}}</h3>
+        <input type="text" name="availableSearch" placeholder="{{localize 'DEMOCRACY.Builder.Search'}}" />
+        <div class="democracy-bulk-actions">
+          <button type="button" class="democracy-btn-ghost" data-action="bulkSelectPlayerOwned">{{localize "DEMOCRACY.Builder.SelectPlayerOwned"}}</button>
+          <button type="button" class="democracy-btn-ghost" data-action="bulkSelectNpcs">{{localize "DEMOCRACY.Builder.SelectNpcs"}}</button>
+        </div>
+        {{#if hasNoSceneTokens}}
+          <p>{{localize "DEMOCRACY.Builder.NoSceneTokens"}}</p>
+        {{/if}}
+        <ul class="democracy-token-list">
+          {{#each availableTokens as |token|}}
+            <li>
+              <button type="button" class="democracy-token-card" data-action="toggleParticipant" data-token-id="{{token.id}}">
+                <img src="{{token.img}}" alt="" width="24" height="24" />
+                <span>{{token.name}}</span>
+                {{#if token.isNpc}}<span class="tag">{{localize "DEMOCRACY.Builder.NpcTag"}}</span>{{/if}}
+                {{#if token.isOfflineOwner}}<span class="tag">{{localize "DEMOCRACY.Builder.OfflineOwnerTag"}}</span>{{/if}}
+              </button>
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+
+      <div class="democracy-pool">
+        <h3>{{localize "DEMOCRACY.Builder.SelectedTokens"}}</h3>
+        <input type="text" name="selectedSearch" placeholder="{{localize 'DEMOCRACY.Builder.Search'}}" />
+        <button type="button" class="democracy-btn-ghost" data-action="bulkClear">{{localize "DEMOCRACY.Builder.Clear"}}</button>
+        <ul class="democracy-token-list">
+          {{#each selectedTokens as |token|}}
+            <li>
+              <button type="button" class="democracy-token-card {{#if token.isDuplicateActor}}warning{{/if}}" data-action="toggleParticipant" data-token-id="{{token.id}}">
+                <img src="{{token.img}}" alt="" width="24" height="24" />
+                <span>{{token.name}}</span>
+              </button>
+              {{#if ../draft.weightedVote}}
+                <label class="democracy-weight-label" for="democracy-weight-{{token.id}}">
+                  <span class="sr-only">{{token.name}} </span>{{localize "DEMOCRACY.Builder.WeightLabel"}}
+                </label>
+                <input id="democracy-weight-{{token.id}}" class="democracy-weight-input" type="number" name="weights.{{token.id}}" value="{{token.weight}}" min="1" step="1" />
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "DEMOCRACY.Builder.PollSettings"}}</legend>
+
+    <label class="democracy-toggle-card">
+      <input type="checkbox" name="secretVote" aria-describedby="democracy-hint-secret" {{#if draft.secretVote}}checked{{/if}} />
+      <span class="democracy-toggle-text">
+        <span class="democracy-toggle-title">{{localize "DEMOCRACY.Builder.SecretVote"}}</span>
+        <span id="democracy-hint-secret" class="democracy-toggle-hint">{{localize "DEMOCRACY.Builder.SecretVoteHint"}}</span>
+      </span>
+    </label>
+
+    <label class="democracy-toggle-card">
+      <input type="checkbox" name="liveResults" aria-describedby="democracy-hint-live" {{#if draft.liveResults}}checked{{/if}} />
+      <span class="democracy-toggle-text">
+        <span class="democracy-toggle-title">{{localize "DEMOCRACY.Builder.LiveResults"}}</span>
+        <span id="democracy-hint-live" class="democracy-toggle-hint">{{localize "DEMOCRACY.Builder.LiveResultsHint"}}</span>
+      </span>
+    </label>
+
+    <label class="democracy-toggle-card">
+      <input type="checkbox" name="weightedVote" aria-describedby="democracy-hint-weighted" {{#if draft.weightedVote}}checked{{/if}} />
+      <span class="democracy-toggle-text">
+        <span class="democracy-toggle-title">{{localize "DEMOCRACY.Builder.WeightedVote"}}</span>
+        <span id="democracy-hint-weighted" class="democracy-toggle-hint">{{localize "DEMOCRACY.Builder.WeightedVoteHint"}}</span>
+      </span>
+    </label>
+
+    <label class="democracy-toggle-card">
+      <input type="checkbox" name="timedVote" aria-describedby="democracy-hint-timed" {{#if draft.timedVote}}checked{{/if}} />
+      <span class="democracy-toggle-text">
+        <span class="democracy-toggle-title">{{localize "DEMOCRACY.Builder.TimedVote"}}</span>
+        <span id="democracy-hint-timed" class="democracy-toggle-hint">{{localize "DEMOCRACY.Builder.TimedVoteHint"}}</span>
+        {{#if draft.timedVote}}
+          <input type="number" name="timerSeconds" value="{{draft.timerSeconds}}" min="10" max="604800" />
+        {{/if}}
+      </span>
+    </label>
+
+    <label class="democracy-toggle-card">
+      <input type="checkbox" name="quorumEnabled" aria-describedby="democracy-hint-quorum" {{#if draft.quorumEnabled}}checked{{/if}} />
+      <span class="democracy-toggle-text">
+        <span class="democracy-toggle-title">{{localize "DEMOCRACY.Builder.Quorum"}}</span>
+        <span id="democracy-hint-quorum" class="democracy-toggle-hint">{{localize "DEMOCRACY.Builder.QuorumHint"}}</span>
+        {{#if draft.quorumEnabled}}
+          <input type="number" name="quorumPercent" value="{{draft.quorumPercent}}" min="1" max="100" />
+        {{/if}}
+      </span>
+    </label>
+  </fieldset>
+
+  <footer class="democracy-builder-actions">
+    <button type="button" class="democracy-btn-ghost" data-action="cancel">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i> {{localize "DEMOCRACY.Builder.Cancel"}}
+    </button>
+    <button type="button" class="democracy-btn-primary" data-action="startVote" {{#unless canStart}}disabled{{/unless}}>
+      <i class="fa-solid fa-check-to-slot" aria-hidden="true"></i> {{localize "DEMOCRACY.Builder.StartVote"}}
+    </button>
+  </footer>
+</section>

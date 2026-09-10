@@ -1,0 +1,124 @@
+<section class="democracy-ballot">
+  {{#unless hasActivePoll}}
+    <p class="democracy-empty">{{localize "DEMOCRACY.Notifications.NoActiveVote"}}</p>
+  {{/unless}}
+
+  {{#if hasActivePoll}}
+    <header class="democracy-ballot-header">
+      <h2>{{projection.title}}</h2>
+      <p class="democracy-status-line tag">{{localize "DEMOCRACY.Status.Label"}}: {{statusLabel}}</p>
+      {{#if projection.description}}<p class="democracy-description">{{projection.description}}</p>{{/if}}
+      {{#if isTimed}}
+        <p class="democracy-countdown" role="timer" aria-live="off">
+          <i class="fa-solid fa-clock" aria-hidden="true"></i>
+          {{localize "DEMOCRACY.Ballot.TimeRemaining"}}: <strong>{{countdownText}}</strong>
+        </p>
+      {{/if}}
+    </header>
+
+    {{#unless isActive}}
+      <section class="democracy-result">
+        <h3>{{localize (concat "DEMOCRACY.Result." outcome.status)}}</h3>
+        {{#if winnerLabels.length}}
+          <p class="democracy-winner-line">
+            <strong>{{localize "DEMOCRACY.Management.WinningOption"}}:</strong>
+            {{#each winnerLabels}}{{#unless @first}}, {{/unless}}{{this}}{{/each}}
+          </p>
+        {{/if}}
+        {{#if turnout}}
+          <p>{{localize "DEMOCRACY.Management.Turnout"}}: {{turnout.submittedCount}}/{{turnout.eligibleCount}}</p>
+        {{/if}}
+      </section>
+    {{/unless}}
+
+    {{#if eligible.length}}
+      <div class="democracy-participant-tabs" role="tablist">
+        {{#each eligible as |p|}}
+          <button type="button" role="tab" data-action="selectParticipant" data-participant-id="{{p.id}}"
+            aria-selected="{{eq p.id ../activeParticipant.id}}" tabindex="{{#if (eq p.id ../activeParticipant.id)}}0{{else}}-1{{/if}}"
+            class="democracy-participant-tab status-{{p.status}} {{#if (eq p.id ../activeParticipant.id)}}active{{/if}}">
+            <img src="{{p.img}}" alt="" width="20" height="20" />
+            <span class="democracy-tab-name">{{p.name}}</span>
+            <span class="democracy-tab-status">{{p.statusLabel}}</span>
+          </button>
+        {{/each}}
+      </div>
+
+      {{#unless canCastBallot}}
+        {{#if alreadyVoted}}
+          <p class="democracy-notice">{{localize "DEMOCRACY.Ballot.AlreadyVoted"}}</p>
+        {{/if}}
+      {{/unless}}
+      {{#if canCastBallot}}
+
+        {{#if isProposal}}
+          <fieldset class="democracy-proposal-choices" role="radiogroup" aria-label="{{localize 'DEMOCRACY.Ballot.ProposalChoices'}}">
+            {{#each proposalChoices as |choice|}}
+              <label class="democracy-choice-card {{#if (eq choice.value ../proposalChoice)}}selected{{/if}}">
+                <input type="radio" name="proposalChoice" data-action="selectProposalChoice" data-choice="{{choice.value}}"
+                  {{#if (eq choice.value ../proposalChoice)}}checked{{/if}} />
+                <span>{{choice.label}}</span>
+              </label>
+            {{/each}}
+          </fieldset>
+        {{/if}}
+
+        {{#if isChoice}}
+          <fieldset class="democracy-choice-options">
+            {{#if allowMultipleSelections}}
+              <p class="democracy-selection-count">{{localize "DEMOCRACY.Ballot.SelectedOfMax"}} {{selectedCount}}/{{maxSelections}}</p>
+            {{/if}}
+            {{#each options as |option|}}
+              <label class="democracy-choice-card {{#if option.selected}}selected{{/if}}">
+                <input type="{{#if ../allowMultipleSelections}}checkbox{{else}}radio{{/if}}"
+                  data-action="toggleOption" data-option-id="{{option.id}}"
+                  {{#if option.selected}}checked{{/if}} {{#if ../abstained}}disabled{{/if}} />
+                <span>{{option.label}}</span>
+              </label>
+            {{/each}}
+            <label class="democracy-choice-card democracy-abstain-card {{#if abstained}}selected{{/if}}">
+              <input type="checkbox" data-action="toggleAbstain" {{#if abstained}}checked{{/if}} />
+              <span>{{localize "DEMOCRACY.Ballot.Abstain"}}</span>
+            </label>
+          </fieldset>
+        {{/if}}
+
+        <footer class="democracy-ballot-footer">
+          <button type="button" class="democracy-submit-button" data-action="submit" {{#unless canSubmit}}disabled{{/unless}}>
+            {{#if (eq submissionState "sending")}}
+              {{localize "DEMOCRACY.Ballot.Sending"}}
+            {{else}}
+              {{localize "DEMOCRACY.Ballot.SubmitVote"}}
+            {{/if}}
+          </button>
+          {{#if (eq submissionState "accepted")}}
+            <p class="democracy-status-banner accepted" role="status">
+              <i class="fa-solid fa-circle-check" aria-hidden="true"></i> {{localize "DEMOCRACY.Ballot.Accepted"}}
+            </p>
+          {{/if}}
+          {{#if (eq submissionState "rejected")}}
+            <p class="democracy-status-banner rejected" role="alert">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> {{localize "DEMOCRACY.Ballot.Rejected"}} {{rejectionReasonLabel}}
+            </p>
+          {{/if}}
+        </footer>
+      {{/if}}
+
+      {{#if liveTally}}
+        <section class="democracy-live-results">
+          <h3><i class="fa-solid fa-chart-simple" aria-hidden="true"></i> {{localize "DEMOCRACY.Ballot.LiveResultsLabel"}}</h3>
+          {{#each liveTally.rows as |row|}}
+            <div class="democracy-live-bar-row">
+              <span class="democracy-live-bar-label">{{row.label}}</span>
+              <span class="democracy-live-bar-count">{{row.count}}</span>
+            </div>
+          {{/each}}
+        </section>
+      {{/if}}
+    {{else}}
+      {{#if isActive}}
+        <p class="democracy-empty">{{localize "DEMOCRACY.Ballot.NoEligibleParticipants"}}</p>
+      {{/if}}
+    {{/if}}
+  {{/if}}
+</section>
