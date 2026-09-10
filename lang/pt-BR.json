@@ -8,6 +8,40 @@
       "Name": "Democracy",
       "Title": "Abrir Democracy"
     },
+    "Settings": {
+      "AutoOpenEligiblePolls": {
+        "Name": "Abrir Votações Elegíveis Automaticamente",
+        "Hint": "Quando uma nova votação começa e você possui um participante elegível, abre sua Cédula automaticamente em vez de esperar você clicar em Abrir Votação."
+      },
+      "DefaultSecretVote": {
+        "Name": "Padrão: Voto Secreto",
+        "Hint": "Se uma nova votação já começa com Voto Secreto marcado."
+      },
+      "DefaultLiveResults": {
+        "Name": "Padrão: Resultados ao Vivo",
+        "Hint": "Se uma nova votação já começa com Resultados ao Vivo marcado."
+      },
+      "DefaultWeightedVote": {
+        "Name": "Padrão: Voto Ponderado",
+        "Hint": "Se uma nova votação já começa com Voto Ponderado marcado."
+      },
+      "DefaultQuorumEnabled": {
+        "Name": "Padrão: Quórum",
+        "Hint": "Se uma nova votação já começa com Quórum marcado."
+      },
+      "DefaultTimerSeconds": {
+        "Name": "Padrão: Duração do Cronômetro (segundos)",
+        "Hint": "O tempo pré-preenchido quando uma nova votação ativa a Votação Cronometrada."
+      },
+      "DefaultQuorumPercent": {
+        "Name": "Padrão: Porcentagem de Quórum",
+        "Hint": "A porcentagem de quórum pré-preenchida quando uma nova votação ativa o Quórum."
+      },
+      "DefaultProposalRule": {
+        "Name": "Padrão: Regra da Proposta",
+        "Hint": "A Regra da Proposta com a qual uma nova Votação de Proposta começa."
+      }
+    },
     "Builder": {
       "Title": "Nova Votação",
       "PollTitle": "Título da Votação",

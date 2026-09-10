@@ -1,10 +1,17 @@
-import { MODULE_ID } from "./constants.mjs";
+import { MODULE_ID, PROPOSAL_RULE } from "./constants.mjs";
 
 export const SETTINGS = Object.freeze({
   SCHEMA_VERSION: "schemaVersion",
   ACTIVE_POLL_PROJECTION: "activePollProjection",
   AUTO_OPEN_ELIGIBLE_POLLS: "autoOpenEligiblePolls",
   CINEMATIC_CONFIG: "cinematicConfig",
+  DEFAULT_SECRET_VOTE: "defaultSecretVote",
+  DEFAULT_LIVE_RESULTS: "defaultLiveResults",
+  DEFAULT_WEIGHTED_VOTE: "defaultWeightedVote",
+  DEFAULT_QUORUM_ENABLED: "defaultQuorumEnabled",
+  DEFAULT_TIMER_SECONDS: "defaultTimerSeconds",
+  DEFAULT_QUORUM_PERCENT: "defaultQuorumPercent",
+  DEFAULT_PROPOSAL_RULE: "defaultProposalRule",
 });
 
 export const CURRENT_SCHEMA_VERSION = 1;
@@ -53,6 +60,94 @@ export function registerSettings() {
     type: Object,
     default: DEFAULT_CINEMATIC_CONFIG,
   });
+
+  // World defaults pre-filled on a fresh poll draft — only ever read once,
+  // when the Builder opens for a brand-new poll (see poll-builder.mjs).
+  game.settings.register(MODULE_ID, SETTINGS.DEFAULT_SECRET_VOTE, {
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    name: "DEMOCRACY.Settings.DefaultSecretVote.Name",
+    hint: "DEMOCRACY.Settings.DefaultSecretVote.Hint",
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.DEFAULT_LIVE_RESULTS, {
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    name: "DEMOCRACY.Settings.DefaultLiveResults.Name",
+    hint: "DEMOCRACY.Settings.DefaultLiveResults.Hint",
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.DEFAULT_WEIGHTED_VOTE, {
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    name: "DEMOCRACY.Settings.DefaultWeightedVote.Name",
+    hint: "DEMOCRACY.Settings.DefaultWeightedVote.Hint",
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.DEFAULT_QUORUM_ENABLED, {
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    name: "DEMOCRACY.Settings.DefaultQuorumEnabled.Name",
+    hint: "DEMOCRACY.Settings.DefaultQuorumEnabled.Hint",
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.DEFAULT_TIMER_SECONDS, {
+    scope: "world",
+    config: true,
+    type: Number,
+    default: 300,
+    range: { min: 10, max: 604800, step: 10 },
+    name: "DEMOCRACY.Settings.DefaultTimerSeconds.Name",
+    hint: "DEMOCRACY.Settings.DefaultTimerSeconds.Hint",
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.DEFAULT_QUORUM_PERCENT, {
+    scope: "world",
+    config: true,
+    type: Number,
+    default: 50,
+    range: { min: 1, max: 100, step: 1 },
+    name: "DEMOCRACY.Settings.DefaultQuorumPercent.Name",
+    hint: "DEMOCRACY.Settings.DefaultQuorumPercent.Hint",
+  });
+
+  game.settings.register(MODULE_ID, SETTINGS.DEFAULT_PROPOSAL_RULE, {
+    scope: "world",
+    config: true,
+    type: String,
+    default: PROPOSAL_RULE.SIMPLE_MAJORITY,
+    choices: {
+      [PROPOSAL_RULE.SIMPLE_MAJORITY]: "DEMOCRACY.Builder.ProposalRuleOption.simple-majority",
+      [PROPOSAL_RULE.ABSOLUTE_MAJORITY]: "DEMOCRACY.Builder.ProposalRuleOption.absolute-majority",
+      [PROPOSAL_RULE.MAJORITY_OF_PARTICIPANTS]: "DEMOCRACY.Builder.ProposalRuleOption.majority-of-participants",
+      [PROPOSAL_RULE.UNANIMITY_OF_VOTERS]: "DEMOCRACY.Builder.ProposalRuleOption.unanimity-of-voters",
+      [PROPOSAL_RULE.UNANIMITY_OF_ALL_MEMBERS]: "DEMOCRACY.Builder.ProposalRuleOption.unanimity-of-all-members",
+      [PROPOSAL_RULE.SUPERMAJORITY]: "DEMOCRACY.Builder.ProposalRuleOption.supermajority",
+    },
+    name: "DEMOCRACY.Settings.DefaultProposalRule.Name",
+    hint: "DEMOCRACY.Settings.DefaultProposalRule.Hint",
+  });
+}
+
+/** Read the GM-configured world defaults for a brand-new poll draft. */
+export function getPollDraftOverrides() {
+  return {
+    secretVote: game.settings.get(MODULE_ID, SETTINGS.DEFAULT_SECRET_VOTE),
+    liveResults: game.settings.get(MODULE_ID, SETTINGS.DEFAULT_LIVE_RESULTS),
+    weightedVote: game.settings.get(MODULE_ID, SETTINGS.DEFAULT_WEIGHTED_VOTE),
+    quorumEnabled: game.settings.get(MODULE_ID, SETTINGS.DEFAULT_QUORUM_ENABLED),
+    timerSeconds: game.settings.get(MODULE_ID, SETTINGS.DEFAULT_TIMER_SECONDS),
+    quorumPercent: game.settings.get(MODULE_ID, SETTINGS.DEFAULT_QUORUM_PERCENT),
+    proposalRule: game.settings.get(MODULE_ID, SETTINGS.DEFAULT_PROPOSAL_RULE),
+  };
 }
 
 export function getCinematicConfig() {

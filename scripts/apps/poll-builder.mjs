@@ -13,6 +13,7 @@ import { setActivePollProjection, hasActivePoll as checkHasActivePoll } from "..
 import { createPrivateRecord } from "../records/private-poll-repository.mjs";
 import { PARTICIPANT_STATUS, POLL_LIFECYCLE } from "../constants.mjs";
 import { postPollStartedMessage } from "../chat.mjs";
+import { getPollDraftOverrides } from "../config-settings.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -62,7 +63,7 @@ export class PollBuilder extends HandlebarsApplicationMixin(ApplicationV2) {
     form: { template: `modules/${MODULE_ID}/templates/poll-builder.hbs` },
   };
 
-  #draft = defaultPollDraft();
+  #draft = defaultPollDraft(getPollDraftOverrides());
   #availableSearch = "";
   #selectedSearch = "";
 

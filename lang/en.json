@@ -8,6 +8,40 @@
       "Name": "Democracy",
       "Title": "Open Democracy"
     },
+    "Settings": {
+      "AutoOpenEligiblePolls": {
+        "Name": "Auto-Open Eligible Polls",
+        "Hint": "When a new poll starts and you own an eligible participant, automatically open your Ballot instead of waiting for you to click Open Vote."
+      },
+      "DefaultSecretVote": {
+        "Name": "Default: Secret Vote",
+        "Hint": "Whether a new poll starts with Secret Vote checked."
+      },
+      "DefaultLiveResults": {
+        "Name": "Default: Live Results",
+        "Hint": "Whether a new poll starts with Live Results checked."
+      },
+      "DefaultWeightedVote": {
+        "Name": "Default: Weighted Vote",
+        "Hint": "Whether a new poll starts with Weighted Vote checked."
+      },
+      "DefaultQuorumEnabled": {
+        "Name": "Default: Quorum",
+        "Hint": "Whether a new poll starts with Quorum checked."
+      },
+      "DefaultTimerSeconds": {
+        "Name": "Default: Timer Duration (seconds)",
+        "Hint": "The timer length pre-filled when a new poll enables Timed Vote."
+      },
+      "DefaultQuorumPercent": {
+        "Name": "Default: Quorum Percentage",
+        "Hint": "The quorum percentage pre-filled when a new poll enables Quorum."
+      },
+      "DefaultProposalRule": {
+        "Name": "Default: Proposal Rule",
+        "Hint": "The Proposal Rule a new Proposal poll starts on."
+      }
+    },
     "Builder": {
       "Title": "New Poll",
       "PollTitle": "Poll Title",

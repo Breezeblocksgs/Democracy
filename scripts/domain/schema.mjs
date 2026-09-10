@@ -44,7 +44,12 @@ export function clampMaxSelections(maxSelections, optionCount) {
   return Math.min(Math.trunc(maxSelections), upperBound);
 }
 
-export function defaultPollDraft() {
+/**
+ * `overrides` lets the Foundry-integration layer apply GM-configured world
+ * defaults (see config-settings.mjs) without this pure function ever
+ * touching a Foundry global itself.
+ */
+export function defaultPollDraft(overrides = {}) {
   return {
     title: "",
     description: "",
@@ -63,6 +68,7 @@ export function defaultPollDraft() {
     proposalRule: PROPOSAL_RULE.SIMPLE_MAJORITY,
     supermajorityThreshold: DEFAULT_SUPERMAJORITY_THRESHOLD,
     supermajorityBasis: SUPERMAJORITY_BASIS.VALID_VOTES,
+    ...overrides,
   };
 }
 
