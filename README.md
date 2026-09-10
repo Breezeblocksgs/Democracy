@@ -1,4 +1,6 @@
 # Democracy
+# Action Keeper
+[<img src="images/buymeacoffee.png" alt="Buy Me a Coffee" width="386">](https://www.patreon.com/cw/Breezeblocksgs)
 
 A Foundry VTT (v14) module for running real votes at the table — **Proposal** votes and **Choice** polls, cast token-by-token, with secret or live results, weighted votes, timers, quorum, exact majority rules, a cinematic result reveal, and GM-only Journal exports. System-independent.
 
