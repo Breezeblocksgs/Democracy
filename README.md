@@ -1,5 +1,7 @@
 # Democracy
 
+<a href="https://www.patreon.com/cw/Breezeblocksgs"><img src="images/buymeacoffee.png" alt="Buy Me a Coffee" width="386"></a>
+
 A Foundry VTT (v14) module for running real votes at the table — **Proposal** votes and **Choice** polls, cast token-by-token, with secret or live results, weighted votes, timers, quorum, exact majority rules, a cinematic result reveal, and GM-only Journal exports. System-independent.
 
 ![Poll Management, active vote](screenshots/02-poll-management-active.png)
@@ -72,3 +74,4 @@ Verified live against Foundry v14 Build 367: Foundry's core Document sync sends 
 ## Support
 
 - Issues and bug reports: [GitHub Issues](https://github.com/Breezeblocksgs/Democracy/issues)
+- Support the author: [Patreon](https://www.patreon.com/cw/Breezeblocksgs)
